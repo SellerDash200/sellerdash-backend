@@ -25,3 +25,17 @@ def db_test():
     cur.close()
     conn.close()
     return {"db": "connected"}
+
+## import redis
+import redis
+
+redis_client = redis.Redis.from_url(
+    os.environ["REDIS_URL"],
+    decode_responses=True
+)
+
+@app.get("/redis-test")
+def redis_test():
+    redis_client.set("ping", "pong")
+    value = redis_client.get("ping")
+    return {"redis": value}
