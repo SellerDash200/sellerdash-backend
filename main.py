@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import psycopg2
+from tasks import add
 
 app = FastAPI()
 
@@ -39,3 +40,9 @@ def redis_test():
     redis_client.set("ping", "pong")
     value = redis_client.get("ping")
     return {"redis": value}
+
+#celery route
+@app.post("/tasks/add")
+def enqueue_add(x: int, y: int):
+    task = add.delay(x, y)
+    return {"task_id": task.id}
